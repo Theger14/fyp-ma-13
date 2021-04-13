@@ -44,12 +44,17 @@
                 \end{itemize}
         \end{itemize}
     } \\
-    \multicolumn{2}{|p{\textwidth}|}{\hspace{0.6cm}\underline{Constraints and assumptions}
+    \multicolumn{2}{|p{\textwidth}|}{\hspace{0.6cm}\underline{Constraints}
         \begin{itemize}
-            \item The project team will be able to obtain a labelled dataset of faces to train the model.
-            \item The project team will be able to obtain a machine with sufficient computational power to train the model.
+            \item Amazon Web Services must remain continuously operational throughout the project duration for the AI model to run.
         \end{itemize}
     } \\
+    \multicolumn{2}{|p{\textwidth}|}{\hspace{0.6cm}\underline{Assumptions}
+        \begin{itemize}
+            \item The project team will have a sufficient budget to run this AI model on Amazon Web Services, which is a cloud computing platform.
+            \item The project team will be able to obtain a free online labelled dataset of faces to train the model.
+        \end{itemize}
+    } \\\\\\
     \multicolumn{2}{|p{\textwidth}|}{\textbf{2. AI model must be compatible with multiple programming environments}} \\
     \multicolumn{2}{|p{\textwidth}|}{\hspace{0.6cm}\underline{In scope}
         \begin{itemize}
@@ -59,10 +64,6 @@
                     \item JavaScript
                     \item C++
                 \end{itemize}
-        \end{itemize}
-    } \\
-    \multicolumn{2}{|p{\textwidth}|}{
-        \begin{itemize}
             \item Compatibility with most operating systems, such as:
                 \begin{itemize}
                     \item Desktop: Windows, macOS, Linux
@@ -81,10 +82,15 @@
                 \end{itemize}
         \end{itemize}
     } \\
-    \multicolumn{2}{|p{\textwidth}|}{\hspace{0.6cm}\underline{Constraints and assumptions}
+    \multicolumn{2}{|p{\textwidth}|}{\hspace{0.6cm}\underline{Constraints}
+        \begin{itemize}
+            \item The external dependencies of the APIs must remain up-to-date with the latest updates of their programming languages. Otherwise, the APIs will lose forward compatibility and become dysfunctional.
+        \end{itemize}
+    } \\
+    \multicolumn{2}{|p{\textwidth}|}{\hspace{0.6cm}\underline{Assumptions}
         \begin{itemize}
             \item Developers will use the face recognition model to integrate with existing software.
-            \item The APIs will be maintained and updated at regular intervals after product release to ensure continuous support and forward compatibility.
+            \item The APIs will be maintained and updated at regular intervals by open-source contributors after product release to ensure continuous support and forward compatibility.
         \end{itemize}
     } \\
     \multicolumn{2}{|p{\textwidth}|}{\textbf{3. Web platform to host the AI model}} \\
@@ -105,7 +111,13 @@
     } \\
     \multicolumn{2}{|p{\textwidth}|}{\hspace{0.6cm}\underline{Constraints and assumptions}
         \begin{itemize}
-            \item Users will have Internet access.
+            \item Users of the platform must have Internet access.
+            \item The cloud services to host the web platform must remain continuously operational to ensure the platform remains online.
+            \item The web document standards (HTML, CSS, JavaScript) must continuously support the rendering of the website. Otherwise, the platform will not run at all.
+        \end{itemize}
+    } \\
+    \multicolumn{2}{|p{\textwidth}|}{\hspace{0.6cm}\underline{Assumptions}
+        \begin{itemize}
             \item Users will access the platform using popular web browsers, such as:
                 \begin{itemize}
                     \item Chrome
@@ -120,10 +132,6 @@
         \begin{itemize}
             \item User guide on how to navigate the web platform
             \item Setup guide for the AI model
-        \end{itemize}
-    } \\
-    \multicolumn{2}{|p{\textwidth}|}{\hspace{0.6cm}
-        \begin{itemize}
             \item Description of all key aspects of the AI model, particularly:
                 \begin{itemize}
                     \item Image and video processing
@@ -139,7 +147,12 @@
             \item Beginner tutorials on learning the programming languages used
         \end{itemize}
     } \\
-    \multicolumn{2}{|p{\textwidth}|}{\hspace{0.6cm}\underline{Constraints and assumptions}
+    \multicolumn{2}{|p{\textwidth}|}{\hspace{0.6cm}\underline{Constraints}
+        \begin{itemize}
+            \item External documentation for all dependencies must remain available and up-to-date. Otherwise, the documentation for the AI model will no longer be useful and comprehensive without reliable and up-to-date external sources.
+        \end{itemize}
+    } \\
+    \multicolumn{2}{|p{\textwidth}|}{\hspace{0.6cm}\underline{Assumptions}
         \begin{itemize}
             \item Users are able to read and understand English.
             \item Developers are able to read and understand technical documentation.
