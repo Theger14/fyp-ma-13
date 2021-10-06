@@ -57,7 +57,7 @@ def gen_metrics(model_type, all_models, original_fp, perturbation='all', gender=
     perturbation: str
         Perturbation type. Either 'ori', 'masked', 'glasses', 'make_up' or 'all'
     gender : str
-        Gender. Either None, 'male' or female to specify the gender. If None it make predictions on both.
+        Gender. Either None, 'male' or 'female' to specify the gender. If None it make predictions on both.
     """
     # FEMALE => 0
     # MALE => 1
@@ -256,6 +256,8 @@ def make_pred(image_fn, model_type, debiased=False, pt=None):
         Path to image
     model_type : str
         Either 'mobile' (MobileNet), 'dense' (DenseNet) or 'res' (ResNet50)
+    debiased : boolean
+        Determines whether the debiased model should be used.
     pt : str
         Perturbation type (default = None)
     """
