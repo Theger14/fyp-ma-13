@@ -260,6 +260,7 @@ def make_pred(image_fn, model_type, debiased=False, pt=None):
         Determines whether the debiased model should be used.
     pt : str
         Perturbation type (default = None)
+            'g' - glasses filter, 'mu' - makeup filter, 'msk' - mask filter
     """
     model_path = '/home/monash/Desktop/fyp-work/fyp-ma-13/fyp-models/timeline/{}/best_weights/set10/model_tl_best_weights_{}_set10.h5'
     # Set model
