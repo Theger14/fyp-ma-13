@@ -32,7 +32,7 @@
 ## `app/app.py`
 
 This is a software script that runs the GUI. It is modelled as a class and
-allows the customization of:
+allows the customisation of:
 
 1. The image being selected in either JPG or PNG format
 2. The version of the model being used: baseline (unperturbed) or debiased
@@ -50,7 +50,8 @@ refer to the documentation in `app/app.py`.
 
 ## `fyp-models/poc_tl_all_cv.ipynb`
 
-This notebook is focused on model creation, model training and model evaluation.
+This notebook is focused on model creation, model training, and model
+evaluation.
 
 ### Outline
 
@@ -67,16 +68,14 @@ This notebook is focused on model creation, model training and model evaluation.
 
 ## `fyp-models/gen_results.py`
 
-This Python script stores useful functions that allows us to perform useful actions.
+This Python script stores useful functions that allow us to perform useful actions, which include:
 
-Such actions include:
-
-- Adding a desired filter to a specific image
+- Adding a filter to a specific image
 - Making a single prediction with a confidence score for a specific image
 
 | Function | Description |
 | --- | ----------- |
 | ```gen_metrics``` | Generates classification report and confusion matrix (sklearn.metrics). Used by ```gen_save_cr_cm``` function.
 | ```gen_save_cr_cm``` | Generates, saves and returns classification reports and confusion matrix. Used in ```poc_tl_all_cv.ipynb```.|
-| ```apply_filter``` | Applies a desired filter to specific image. Used by the GUI to apply filter to specific image and store in a target file path.|
-| ```make_pred``` | Returns predicted class and confidence for a single image. Used by the GUI to get prediction for a specified image.|
+| ```apply_filter``` | Applies a filter to a specific image. Used by the GUI to apply a filter to a specific image and store it in a target file path.|
+| ```make_pred``` | Returns predicted class and confidence for a single image. Used by the GUI to get a prediction for a specified image.|
