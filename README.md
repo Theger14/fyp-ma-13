@@ -46,8 +46,6 @@ screen and classified with the "Classify" button on the right of the screen.
 For detailed documentation for the specific methods and variables used, please
 refer to the documentation in `app/app.py`.
 
-\pagebreak
-
 ## `fyp-models/poc_tl_all_cv.ipynb`
 
 This notebook is focused on model creation, model training, and model
