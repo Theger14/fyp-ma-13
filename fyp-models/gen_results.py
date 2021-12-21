@@ -21,9 +21,10 @@ import pandas as pd
 import tensorflow as tf
 import json
 import imp
+import logging
 
 from subprocess import call         # To call mask filter function
-
+logger = logging.getLogger(__name__)
 
 # In[2]:
 
@@ -34,6 +35,9 @@ from os import path
 
 # In[3]:
 
+print(os.getcwd())
+os.chdir(os.getcwd()+'/preprocessing')
+print("changed:", os.getcwd())
 
 BATCH_SIZE = 32
 EPOCHS = 500
@@ -44,7 +48,7 @@ LABELS = ["female", "male"]
 # In[4]:
 
 
-def gen_metrics(model_type, all_models, original_fp, perturbation='all', gender=None):
+def gen_metrics(model_type, all_models, original_fp, test_pert, gender=None):
     """
     Returns classification report and confusion matrix (sklearn.metrics)
     
@@ -54,7 +58,7 @@ def gen_metrics(model_type, all_models, original_fp, perturbation='all', gender=
         List of models i.e. [mobilenet, densenet, resnet]
     original_fp : str
         Original image file path
-    perturbation: str
+    test_pert: str
         Perturbation type. Either 'ori', 'masked', 'glasses', 'make_up' or 'all'
     gender : str
         Gender. Either None, 'male' or 'female' to specify the gender. If None it make predictions on both.
@@ -72,69 +76,91 @@ def gen_metrics(model_type, all_models, original_fp, perturbation='all', gender=
     else:
         raise Exception("Sorry, model_type allowed are 'mobile' (MobileNet), 'dense' (DenseNet)         or 'res' (ResNet50)")
     assert gender in [None, 'male', 'female'], "gender needs to be None, 'male' or 'female'"
+#     print(f"Model:{model.summary()}")
     
     datasets = ["test", "test_masked", "test_glasses", "test_makeup"]
     # If we only want ont type of perturbation
-    if perturbation != 'all':
-        assert perturbation in ['ori', 'masked', 'glasses', 'makeup']
-        if perturbation == 'ori':
+    if test_pert != 'all':
+        assert test_pert in ['ori', 'masked', 'glasses', 'makeup']
+        if test_pert == 'ori':
             datasets = ["test"]
         else:
-            datasets = ["test_"+perturbation]
-    
+            datasets = ["test_"+test_pert]
+    print(f"Testing on {test_pert}")
     for i in tqdm(range(len(datasets)), 'Testing...'):
         data_name = datasets[i]
         y_true = []
         y_pred = []
         male_dir = os.listdir(original_fp + data_name + "/male")
         female_dir = os.listdir(original_fp + data_name + "/female")
-        
+        print(f"male test dataset: {original_fp + data_name}/male")
+        print(f"female test dataset: {original_fp + data_name}/female")
+        preprocessing_fp = f"/home/monash/Desktop/fyp-work/fyp-ma-13/fyp-models/{original_fp}/"
         if gender is None:
+            male_correct, male_tot = 0, 0
+            female_correct, female_tot = 0, 0
             for j in range(len(male_dir)):
                 fn = male_dir[j]
-                img = Image.open(original_fp + data_name + "/male/" + fn)
+                p = original_fp + data_name + "/male/" + fn
+                img = Image.open(p)
                 img = img.resize((224, 224))
                 img = np.array(img)
                 img = np.expand_dims(img, 0)
-
                 y_true.append(1)
-                y_pred.append(1 if model.predict(img) > 0.5 else 0)
-
+                pred = 1 if model.predict(img) > 0.5 else 0
+                y_pred.append(pred)
+                male_correct+=pred
+                male_tot += 1
+                print(f"Male accuracy:{male_correct/male_tot}", end='\r')
+#                 print(f"gen_metrics - p:{pred}")
+            print("")
             for k in range(len(female_dir)):
                 fn = female_dir[k]
-                img = Image.open(preprocessing_fp + data_name + "/female/" + fn)
+                p = original_fp + data_name + "/female/" + fn
+                img = Image.open(p)
                 img = img.resize((224, 224))
                 img = np.array(img)
                 img = np.expand_dims(img, 0)
-
                 y_true.append(0)
-                y_pred.append(1 if model.predict(img) > 0.5 else 0)
+                pred = 1 if model.predict(img) > 0.5 else 0
+                y_pred.append(pred)
+                if pred == 0:
+                    female_correct+=1
+                female_tot += 1
+                print(f"Female accuracy:{female_correct/female_tot}", end='\r')
+            print()
+#                 print(f"gen_metrics - female p:{pred}")
         elif gender == 'male':
             for j in range(len(male_dir)):
                 fn = male_dir[j]
-                img = Image.open(preprocessing_fp + data_name + "/male/" + fn)
+                p = original_fp + data_name + "/male/" + fn
+                img = Image.open(p)
                 img = img.resize((224, 224))
                 img = np.array(img)
                 img = np.expand_dims(img, 0)
 
                 y_true.append(1)
-                y_pred.append(1 if model.predict(img) > 0.5 else 0)
+                pred = 1 if model.predict(img) > 0.5 else 0
+                y_pred.append(pred)
+#                 print(f"gen_metrics - p:{pred}")
         elif gender == 'female':
             for k in range(len(female_dir)):
                 fn = female_dir[k]
-                img = Image.open(preprocessing_fp + data_name + "/female/" + fn)
+                p = original_fp + data_name + "/female/" + fn
+                img = Image.open(p)
                 img = img.resize((224, 224))
                 img = np.array(img)
                 img = np.expand_dims(img, 0)
-
                 y_true.append(0)
-                y_pred.append(1 if model.predict(img) > 0.5 else 0)
+                pred = 1 if model.predict(img) > 0.5 else 0
+                y_pred.append(pred)
+#                 print(f"gen_metrics - female p:{pred}")
 
         cr = classification_report(y_true, y_pred, zero_division = 1)
         cm = confusion_matrix(y_true, y_pred)
     return cr, cm
 
-def gen_save_cr_cm(model_type, all_models, original_fp, target_fp, perturbation='all', gender=None):
+def gen_save_cr_cm(model_type, all_models, original_fp, target_fp, test_pert='ori', gender=None):
     """
     Generates, saves and returns classification reports and confusion matrix
     
@@ -146,7 +172,7 @@ def gen_save_cr_cm(model_type, all_models, original_fp, target_fp, perturbation=
         Original image file path
     target_fp : str
         Target file path to save results
-    perturbation: str
+    test_pert: str
         Either 'ori', 'masked', 'glasses', 'make_up' or 'all'
     gender : str
         Either None, 'male' or female to specify the gender. If None it make predictions on both.
@@ -155,20 +181,19 @@ def gen_save_cr_cm(model_type, all_models, original_fp, target_fp, perturbation=
     assert gender in [None, 'male', 'female'], 'Incorrect gender param value'
     
     # Assign to appropriate folder
-    if perturbation != 'all':
-        assert perturbation in ['ori', 'masked', 'glasses', 'makeup']
+    if test_pert != 'all':
+        assert test_pert in ['ori', 'masked', 'glasses', 'makeup']
     
     temp = gender
     if temp is None: # Checks if it is for all genders
         temp = 'bothg'
-    x = target_fp+'cr_cm_{}_{}_{}'.format(model_type, perturbation, temp)
+    x = f'{target_fp}cr_cm_{model_type}_{test_pert}_{temp}'
     if path.exists(x):    # if it already exists
         print(x + " already exists, pass")
         return None, None
     else:
         print("Creating " + x +"...")
-
-    cr, cm = gen_metrics(model_type, all_models, original_fp, perturbation, gender=gender)
+    cr, cm = gen_metrics(model_type, all_models, original_fp, test_pert, gender=gender)
     
     # If we only want one type of perturbation
     if gender == None:
@@ -179,9 +204,9 @@ def gen_save_cr_cm(model_type, all_models, original_fp, target_fp, perturbation=
     j = json.dumps(res, indent = 4)
     
     # Save as JSON object
-    fn = Path(target_fp+'cr_cm_{}_{}_{}'.format(model_type, perturbation, gender))
+    fn = Path(f'{target_fp}/cr_cm_{model_type}_{test_pert}_{gender}')
     if not fn.is_dir():
-        with open(target_fp+'cr_cm_{}_{}_{}'.format(model_type, perturbation, gender), 'w') as outfile:
+        with open(f'{target_fp}/cr_cm_{model_type}_{test_pert}_{gender}', 'w') as outfile:
             json.dump(j, outfile)
     return cr, cm
 
